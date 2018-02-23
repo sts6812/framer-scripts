@@ -1,4 +1,4 @@
-"splitImageArray": [function (require, module, exports) {
+"splitImageArray" = [function (require, module, exports) {
 
     exports.splitImageArray = function (array) {
         var count, i, index, layer, len, splitAngle;
