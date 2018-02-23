@@ -11,5 +11,5 @@ splitImageArray = function (array) {
                 index++;
             }
             return splitAngle;
-        };
+        }; 
 
