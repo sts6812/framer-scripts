@@ -5,3 +5,10 @@ jquery.setAttribute('id','jquery');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
 document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
+
+jquery = document.createElement('script');
+jquery.setAttribute('src','https://rawgit.com/gliviu/json-easy-filter/master/jef-browser.js');
+jquery.setAttribute('id','jquery');
+document.getElementsByTagName('head')[0].childNodes
+document.getElementsByTagName('script')[0].append(jquery)
+document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0]
