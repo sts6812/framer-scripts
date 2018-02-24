@@ -349,4 +349,4 @@ var Jef = function () {
         'JefNode' : JefNode,
         'traverse' : traverse
     };
-}
+};
