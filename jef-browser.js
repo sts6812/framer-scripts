@@ -1,5 +1,5 @@
 var Jef = function () {
-
+    "use strict";
 
     var _getPathStr = function (path, delimiter) {
         if (!delimiter) {
@@ -350,5 +350,3 @@ var Jef = function () {
         'traverse' : traverse
     };
 };
-var JefNode = Jef.JefNode;
-var traverse = Jef.traverse;
