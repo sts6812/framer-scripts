@@ -1,5 +1,5 @@
 var Jef = function () {
-    "use strict";
+
 
     var _getPathStr = function (path, delimiter) {
         if (!delimiter) {
