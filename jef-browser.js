@@ -349,6 +349,6 @@ var Jef = function () {
         'JefNode' : JefNode,
         'traverse' : traverse
     };
-}();
+};
 var JefNode = Jef.JefNode;
 var traverse = Jef.traverse;
