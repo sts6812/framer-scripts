@@ -9,7 +9,7 @@ Utils.insertCSS("@import url(https://fonts.googleapis.com/css?family=Roboto+Mono
 
 $ = {
   KINETICS: {},
-  DEVICE: Framer.Device.phone,
+  DEVICE: Framer.Device.screen,
   BUTTONS: {},
   TEXT: {},
   SLIDERS: {
