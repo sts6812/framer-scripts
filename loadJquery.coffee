@@ -1,12 +1,4 @@
-jquery = document.createElement('script');
-
-jquery.setAttribute('src','https://code.jquery.com/jquery-2.2.4.min.js');
-jquery.setAttribute('id','jquery');
-document.getElementsByTagName('head')[0].childNodes
-document.getElementsByTagName('script')[0].append(jquery)
-document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
-
-//laod easy json
+//load easy json
 jquery = document.createElement('script');
 jquery.setAttribute('src','https://rawgit.com/gliviu/json-easy-filter/master/jef-browser.js');
 jquery.setAttribute('id','easyjson');
@@ -18,6 +10,14 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 jquery = document.createElement('script');
 jquery.setAttribute('src','https://cdn.rawgit.com/abdmob/x2js/master/xml2json.min.js');
 jquery.setAttribute('id','json2xml');
+document.getElementsByTagName('head')[0].childNodes
+document.getElementsByTagName('script')[0].append(jquery)
+document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
+
+//load Jquery
+jquery = document.createElement('script');
+jquery.setAttribute('src','https://code.jquery.com/jquery-2.2.4.min.js');
+jquery.setAttribute('id','jquery');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
 document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
