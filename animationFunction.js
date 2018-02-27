@@ -41,4 +41,4 @@ animtemplate(
 	scaleY=1
 	)
 
-----//
+//---
