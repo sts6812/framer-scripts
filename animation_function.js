@@ -19,6 +19,5 @@ animtemplate = function(layer1, layer2, iteration, html, time, delay, tension, f
       })
     }
   });
-  console.log(animation1);
   return eval(animControl);
 };
