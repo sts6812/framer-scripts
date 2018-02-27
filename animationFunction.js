@@ -23,22 +23,4 @@ animtemplate = function(layer1, layer2, iteration, html, time, delay, tension, f
   return eval(animControl);
 };
 
-/*---copy paste code to use:
 
-
-animtemplate(
-	start=from[i],
-	end=to[i],
-	iteration=i,
-	html=from[i].html,
-	time=1,
-	delay=0.1*i,
-	tension=20,
-	friction=10,
-	velocity=10,
-	control='animation1.start()',
-	scaleX=1,
-	scaleY=1
-	)
-
-//---*/
