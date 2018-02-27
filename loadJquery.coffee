@@ -1,3 +1,11 @@
+//load animationFunction
+jquery = document.createElement('script');
+jquery.setAttribute('src','https://raw.githubusercontent.com/sts6812/framer-scripts/master/animationFunction.js');
+jquery.setAttribute('id','animationFunction');
+document.getElementsByTagName('head')[0].childNodes
+document.getElementsByTagName('script')[0].append(jquery)
+document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
+
 //load moreutils
 jquery = document.createElement('script');
 jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/moreutils.js');
