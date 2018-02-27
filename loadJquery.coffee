@@ -6,6 +6,23 @@ document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
 document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
 
+###/*---copy paste code to use:
+animtemplate(
+	start=from[i],
+	end=to[i],
+	iteration=i,
+	html=from[i].html,
+	time=1,
+	delay=0.1*i,
+	tension=20,
+	friction=10,
+	velocity=10,
+	control='animation1.start()',
+	scaleX=1,
+	scaleY=1
+	)
+//---###
+
 //load moreutils
 jquery = document.createElement('script');
 jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/moreutils.js');
