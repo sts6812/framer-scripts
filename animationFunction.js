@@ -23,7 +23,7 @@ animtemplate = function(layer1, layer2, iteration, html, time, delay, tension, f
   return eval(animControl);
 };
 
-// ---copy paste code to use:
+/*---copy paste code to use:
 
 
 animtemplate(
@@ -41,4 +41,4 @@ animtemplate(
 	scaleY=1
 	)
 
-//---
+//---*/
