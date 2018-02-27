@@ -1,6 +1,6 @@
 //load animationFunction
 jquery = document.createElement('script');
-jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/animation_function.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/animation_function_.js');
 jquery.setAttribute('id','animationFunction');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
