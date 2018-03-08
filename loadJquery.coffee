@@ -1,3 +1,11 @@
+//load ControlPanelLayer
+jquery = document.createElement('script');
+jquery.setAttribute('src','https://raw.githubusercontent.com/sts6812/framer-scripts/master/ControlPanelLayer.js');
+jquery.setAttribute('id','ControlPanelLayer');
+document.getElementsByTagName('head')[0].childNodes
+document.getElementsByTagName('script')[0].append(jquery)
+document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
+
 //load distribute layers
 jquery = document.createElement('script');
 jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/distributeLayers.js');
@@ -5,8 +13,6 @@ jquery.setAttribute('id','distributelayers');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
 document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagName('script')[0].childNodes[0],document.getElementsByTagName('head')[0].childNodes[0])
-
-
 
 //load animation controls
 jquery = document.createElement('script');
