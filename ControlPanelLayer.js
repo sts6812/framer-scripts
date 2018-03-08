@@ -356,6 +356,36 @@ ControlPanelLayer = (function(superClass) {
         return _this.options.commitAction();
       };
     })(this));
+      this.document =  document
+   document.onkeypress=((function(_this) {
+      return function() {
+        var fn1;
+        fn1 = function(row) {
+          var idString, typedValue;
+          idString = _.camelCase(_this.options.specs[row].label + "Input");
+          switch (typeof _this.options.specs[row].value) {
+            case "string":
+              typedValue = document.getElementById(idString).value;
+              break;
+            case "number":
+              typedValue = +document.getElementById(idString).value;
+              break;
+            case "boolean":
+              typedValue = _this.options.specs[row].value;
+              break;
+            default:
+              typedValue = document.getElementById(idString).value;
+          }
+          return _this.options.specs[row].value = typedValue;
+        };
+        for (row in _this.options.specs) {
+          fn1(row);
+        }
+          console.log(_this.options)
+        return _this.options.commitAction();
+      };
+    })(this));
+      
     if (this.options.hidden === true) {
       this.hide();
     }
