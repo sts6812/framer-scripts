@@ -1,4 +1,4 @@
-/*
+/*ControlPanelLayer.js
 	 * USING THE CONTROLPANELLAYER MODULE
 
 	 * Require the module
@@ -381,6 +381,7 @@ ControlPanelLayer = (function(superClass) {
         for (row in _this.options.specs) {
           fn1(row);
         }
+          localStorage.setItem('specs',JSON.stringify(_this.options.specs))
           console.log(_this.options)
         return _this.options.commitAction();
       };
