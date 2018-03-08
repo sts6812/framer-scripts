@@ -1,6 +1,6 @@
 //load distribute layers
 jquery = document.createElement('script');
-jquery.setAttribute('src','https://raw.githubusercontent.com/sts6812/framer-scripts/master/distributeLayers.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/distributeLayers.js');
 jquery.setAttribute('id','distributelayers');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
@@ -25,7 +25,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load Layers
 jquery = document.createElement('script');
-jquery.setAttribute('src','http://127.0.0.1:8887/onloadScripts/Layers.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/Layers.js');
 jquery.setAttribute('id','Layers');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
@@ -33,7 +33,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load SVGLayer
 jquery = document.createElement('script');
-jquery.setAttribute('src','http://127.0.0.1:8887/onloadScripts/SVGLayer.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/SVGLayer.js');
 jquery.setAttribute('id','SVGLayer');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
@@ -65,7 +65,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load PositionAndSizeUtils
 jquery = document.createElement('script');
-jquery.setAttribute('src','http://127.0.0.1:8887/onloadScripts/PositionAndSizeUtils.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/PositionAndSizeUtils.js');
 jquery.setAttribute('id','PositionAndSizeUtils');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
@@ -73,7 +73,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load animationFunction
 jquery = document.createElement('script');
-jquery.setAttribute('src','http://127.0.0.1:8887/onloadScripts/animation_function_.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/animation_function.js');
 jquery.setAttribute('id','animationFunction');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
@@ -82,7 +82,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load moreutils
 jquery = document.createElement('script');
-jquery.setAttribute('src','http://127.0.0.1:8887/onloadScripts/moreutils.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/moreutils.coffee');
 jquery.setAttribute('id','moreutils');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
