@@ -82,7 +82,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load moreutils
 jquery = document.createElement('script');
-jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/moreutils.coffee');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/moreutils.js');
 jquery.setAttribute('id','moreutils');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
