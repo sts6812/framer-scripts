@@ -145,7 +145,9 @@ ControlPanelLayer = (function(superClass) {
     rowCount = Object.keys(this.options.specs).length + 1;
     rows = [];
     this.name = "controlPanel";
-    this.width = this.options.width * this.options.scaleFactor;
+    this.width = 270;
+    this.clip =true;
+    this.scale = 1;
     this.height = panelRowHeight * rowCount + panelTopMargin + panelBottomMargin;
     this.borderRadius = 10 * this.options.scaleFactor;
     this.shadowBlur = 20 * this.options.scaleFactor;
@@ -153,8 +155,11 @@ ControlPanelLayer = (function(superClass) {
     this.backgroundColor = this.options.backgroundColor;
     this.draggable = this.options.draggable;
     this.draggable.momentum = false;
+    this.fontFamily = 'Arial'
+    inputCSSpanel = 'div[name="controlPanel"] {\n font-family: Arial;}'
+    Utils.insertCSS(inputCSSpanel)
     labelWidth = this.width - 125 * this.options.scaleFactor;
-    inputCSS = "input[type='text'] {\n  color: " + this.options.inputTextColor + ";\n  background-color: " + this.options.inputBackgroundColor + ";\n  font-family: -apple-system, Helvetica, Arial, sans-serif;\n  font-weight: 500;\n  text-align: right;\n  font-size: " + panelLabelSize + "px;\n  margin-top: " + inputTopMargin + "px;\n  padding: " + (panelLabelSize / 8) + "px;\n  appearance: none;\n  width: " + (inputWidth - panelLabelSize / 8) + "px;\n  box-shadow: inset 0px 1px 2px 0 " + inputInsetShadowColor + ";\n  border-radius: " + (3 * this.options.scaleFactor) + "px;\n  position: relative;\n  top: " + inputTopOffet + "px;\n}";
+    inputCSS = "input[type='text'] {\n  color: " + this.options.inputTextColor + ";\n  background-color: " + this.options.inputBackgroundColor + ";\n  font-family: -apple-system, Helvetica, Arial, sans-serif;\n  font-weight: 500;\n  text-align: left;\n  font-size: " + panelLabelSize + "px;\n  margin-top: " + inputTopMargin + "px;\n  padding: " + (panelLabelSize / 8) + "px;\n  appearance: none;\n  width: " + (inputWidth - panelLabelSize / 8) + "px;\n  box-shadow: inset 0px 1px 2px 0 " + inputInsetShadowColor + ";\n  border-radius: " + (3 * this.options.scaleFactor) + "px;\n  position: relative;\n  top: " + inputTopOffet + "px;\n}";
     Utils.insertCSS(inputCSS);
     keyIndex = 0;
     fn = (function(_this) {
@@ -182,7 +187,7 @@ ControlPanelLayer = (function(superClass) {
           style: {
             "font-size": panelLabelSize + "px",
             "font-weight": "500",
-            "text-align": "right",
+            "text-align": "left",
             "color": _this.options.textColor
           }
         });
@@ -199,7 +204,7 @@ ControlPanelLayer = (function(superClass) {
             style: {
               "font-size": panelTipSize + "px",
               "font-weight": "500",
-              "text-align": "right",
+              "text-align": "left",
               "color": _this.options.textColor
             }
           });
@@ -247,12 +252,12 @@ ControlPanelLayer = (function(superClass) {
             input = new Layer({
               name: idString,
               parent: rowBlock,
-              x: Align.right((_this.width - labelWidth) / 2),
+              x: Align.center((_this.width - labelWidth) / 2),
               y: Align.top,
               color: _this.options.textColor,
-              html: "<input id='" + idString + "' type='text' contenteditable='true' value='" + _this.options.specs[row].value + "'>",
+              html: "<input style='width:187px; margin:left:-47;' id='" + idString + "' type='text' contenteditable='true' value='" + _this.options.specs[row].value + "'>",
               height: panelRowHeight,
-              width: inputWidth,
+              width: 120,
               backgroundColor: "clear"
             });
         }
@@ -322,6 +327,7 @@ ControlPanelLayer = (function(superClass) {
       parent: this,
       width: this.width - panelButtonMargin * 2,
       height: commitButtonHeight,
+      visible: false,
       x: Align.center,
       y: Align.bottom(-panelBottomMargin),
       backgroundColor: this.options.buttonColor,
@@ -357,7 +363,7 @@ ControlPanelLayer = (function(superClass) {
       };
     })(this));
       this.document =  document
-   document.onkeypress=((function(_this) {
+   document.onkeyup=((function(_this) {
       return function() {
         var fn1;
         fn1 = function(row) {
@@ -382,7 +388,8 @@ ControlPanelLayer = (function(superClass) {
           fn1(row);
         }
           localStorage.setItem('specs',JSON.stringify(_this.options.specs))
-          console.log(_this.options)
+         // console.log(_this.options)
+          //location.reload(false);
         return _this.options.commitAction();
       };
     })(this));
