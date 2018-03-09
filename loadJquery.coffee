@@ -9,7 +9,7 @@ document.getElementsByTagName('head')[0].insertBefore(document.getElementsByTagN
 
 //load ControlPanelLayer
 jquery = document.createElement('script');
-jquery.setAttribute('src','https://raw.githubusercontent.com/sts6812/framer-scripts/master/ControlPanelLayer.js');
+jquery.setAttribute('src','https://cdn.rawgit.com/sts6812/framer-scripts/master/ControlPanelLayer.js');
 jquery.setAttribute('id','ControlPanelLayer');
 document.getElementsByTagName('head')[0].childNodes
 document.getElementsByTagName('script')[0].append(jquery)
