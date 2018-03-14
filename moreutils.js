@@ -1,3 +1,5 @@
+require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"moreutils":[function(require,module,exports){
+
 /*
 Pin a layer to another layer. When the second layer moves, the first one will too.
 
@@ -7,7 +9,7 @@ Pin a layer to another layer. When the second layer moves, the first one will to
 
 	Utils.pin(layerA, layerB, 'left')
  */
-var Timer, loremSource,
+var StateManager, Timer, loremSource,
   slice = [].slice,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -62,7 +64,7 @@ Utils.pin = function() {
       for (m = 0, len1 = props.length; m < len1; m++) {
         prop = props[m];
         setPin = {
-          targetLayer: targetLayer,
+          targetLayer: target,
           direction: direction,
           event: "change:" + prop,
           func: function() {
@@ -73,7 +75,7 @@ Utils.pin = function() {
           layer.pins = [];
         }
         layer.pins.push(setPin);
-        results1.push(targetLayer.on(setPin.event, setPin.func));
+        results1.push(target.on(setPin.event, setPin.func));
       }
       return results1;
     })(layer, target, direction));
@@ -308,7 +310,8 @@ Utils.define = function(layer, property, value, callback, validation, error) {
       }
       layer["_" + property] = value;
       return layer.emit("change:" + property, value, layer);
-    }
+    },
+    configurable: true
   });
   if ((callback != null) && typeof callback === 'function') {
     layer.on("change:" + property, callback);
@@ -335,38 +338,42 @@ Set all layers in an array to the same property or properties.
  */
 
 Utils.align = function(layers, direction, animate, animationOptions) {
-  var i, k, layer, len, options, results;
+  var i, k, layer, len, maxX, maxY, minX, minY, options, results;
   if (layers == null) {
     layers = [];
   }
   if (animationOptions == null) {
     animationOptions = {};
   }
+  minX = _.minBy(layers, 'x').x;
+  maxX = _.maxBy(layers, 'maxX').maxX;
+  minY = _.minBy(layers, 'y').y;
+  maxY = _.maxBy(layers, 'maxY').maxY;
   options = (function() {
     switch (direction) {
       case "top":
         return {
-          y: _.minBy(layers, 'y').y
+          y: minY
         };
       case "middle":
         return {
-          midY: _.sumBy(layers, 'midY') / layers.length
+          midY: (maxY - minY) / 2 + minY
         };
       case "bottom":
         return {
-          maxY: _.maxBy(layers, 'maxY').maxY
+          maxY: maxY
         };
       case "left":
         return {
-          x: _.minBy(layers, 'x').x
+          x: minY
         };
       case "center":
         return {
-          midX: _.sumBy(layers, 'midX') / layers.length
+          midX: (maxX - minX) / 2 + minX
         };
       case "right":
         return {
-          maxX: _.maxBy(layers, 'maxX').maxX
+          maxX: maxX
         };
       default:
         return {};
@@ -432,11 +439,11 @@ Utils.distribute = function(layers, property, start, end, animate, animationOpti
   }
   distance = (end - start) / (layers.length - 1);
   values = layers.map(function(layer, i) {
-    var obj;
+    var obj1;
     return (
-      obj = {},
-      obj["" + property] = start + (distance * i),
-      obj
+      obj1 = {},
+      obj1["" + property] = start + (distance * i),
+      obj1
     );
   });
   results = [];
@@ -558,6 +565,142 @@ Utils.offsetX = function(layers, distance, animate, animationOptions) {
   }
   return results;
 };
+
+Utils.Timer = Timer = (function() {
+  function Timer(time, f) {
+    this.restart = bind(this.restart, this);
+    this.reset = bind(this.reset, this);
+    this.resume = bind(this.resume, this);
+    this.pause = bind(this.pause, this);
+    this.start = bind(this.start, this);
+    this.paused = false;
+    this.saveTime = null;
+    this.saveFunction = null;
+    if ((time != null) && (f != null)) {
+      this.start(time, f);
+    }
+  }
+
+  Timer.prototype.start = function(time, f) {
+    var proxy, timer;
+    this.saveTime = time;
+    this.saveFunction = f;
+    f();
+    proxy = (function(_this) {
+      return function() {
+        if (!_this.paused) {
+          return f();
+        }
+      };
+    })(this);
+    if (!this.paused) {
+      return this._id = timer = Utils.interval(time, proxy);
+    } else {
+
+    }
+  };
+
+  Timer.prototype.pause = function() {
+    return this.paused = true;
+  };
+
+  Timer.prototype.resume = function() {
+    return this.paused = false;
+  };
+
+  Timer.prototype.reset = function() {
+    return clearInterval(this._id);
+  };
+
+  Timer.prototype.restart = function() {
+    clearInterval(this._id);
+    return Utils.delay(0, (function(_this) {
+      return function() {
+        return _this.start(_this.saveTime, _this.saveFunction);
+      };
+    })(this));
+  };
+
+  return Timer;
+
+})();
+
+
+/*
+A class to manage states of multiple TextLayers, which "observe" the state. 
+When the state changes, the StateManager will update all "observer" TextLayers,
+applying the new state to each TextLayer's template property.
+
+@param {Array} [layers] The layers to observe the state.
+@param {Object} [state] The initial state.
+
+	stateMgr = new Utils.StateManager, myLayers
+		firstName: "David"
+		lastName: "Attenborough"
+
+	stateMgr.setState
+		firstName: "Sir David"
+ */
+
+Utils.StateManager = StateManager = (function() {
+  function StateManager(layers, state) {
+    if (layers == null) {
+      layers = [];
+    }
+    if (state == null) {
+      state = {};
+    }
+    this._updateState = bind(this._updateState, this);
+    this._state = state;
+    this._observers = layers;
+    Object.defineProperty(this, "observers", {
+      get: function() {
+        return this._observers;
+      }
+    });
+    Object.defineProperty(this, "state", {
+      get: function() {
+        return this._state;
+      },
+      set: function(obj) {
+        if (typeof obj !== "object") {
+          throw "State must be an object.";
+        }
+        return this.setState(obj);
+      }
+    });
+    this._updateState();
+  }
+
+  StateManager.prototype._updateState = function() {
+    return this.observers.forEach((function(_this) {
+      return function(layer) {
+        return layer.template = _this.state;
+      };
+    })(this));
+  };
+
+  StateManager.prototype.addObserver = function(layer) {
+    this._observers.push(layer);
+    return layer.template = this.state;
+  };
+
+  StateManager.prototype.removeObserver = function(layer) {
+    return _.pull(this._observers, layer);
+  };
+
+  StateManager.prototype.setState = function(options) {
+    if (options == null) {
+      options = {};
+    }
+    _.merge(this._state, options);
+    this._updateState();
+    return this._state;
+  };
+
+  return StateManager;
+
+})();
 
 ({
   grid: function(array, cols, rowMargin, colMargin) {
@@ -724,8 +867,8 @@ Utils.hug = function(layer, padding) {
   left = _.minBy(layer.children, 'x').x;
   right = _.maxBy(layer.children, 'maxX').maxX;
   _.assign(layer, {
-    width: (bottom - top) + ((ref = padding.top) != null ? ref : 0) + ((ref1 = padding.bottom) != null ? ref1 : 0),
-    height: (right - left) + ((ref2 = padding.left) != null ? ref2 : 0) + ((ref3 = padding.right) != null ? ref3 : 0)
+    height: (bottom - top) + ((ref = padding.top) != null ? ref : 0) + ((ref1 = padding.bottom) != null ? ref1 : 0),
+    width: (right - left) + ((ref2 = padding.left) != null ? ref2 : 0) + ((ref3 = padding.right) != null ? ref3 : 0)
   });
   ref4 = layer.children;
   results = [];
@@ -735,6 +878,23 @@ Utils.hug = function(layer, padding) {
     results.push(child.x = left + (child.x - left) + ((ref6 = padding.left) != null ? ref6 : 0));
   }
   return results;
+};
+
+
+/*
+Change a layer's size to contain its layer's children.
+
+@param {Layer} layer The parent layer to change size.
+
+	Utils.contain(layerA)
+ */
+
+Utils.contain = function(layer) {
+  var ref, ref1;
+  return layer.props = {
+    width: (ref = _.maxBy(layer.children, 'maxX')) != null ? ref.maxX : void 0,
+    height: (ref1 = _.maxBy(layer.children, 'maxY')) != null ? ref1.maxY : void 0
+  };
 };
 
 Utils.getStatusColor = function(dev, lowerBetter) {
@@ -891,81 +1051,18 @@ Utils.px = function(num) {
   return (num * Framer.Device.context.scale) + 'px';
 };
 
-Utils.linkProperties = (function(_this) {
-  return function() {
-    var k, layerA, layerB, len, prop, props, results;
-    layerA = arguments[0], layerB = arguments[1], props = 3 <= arguments.length ? slice.call(arguments, 2) : [];
-    results = [];
-    for (k = 0, len = props.length; k < len; k++) {
-      prop = props[k];
-      results.push((function(prop) {
-        return layerA.on("change:" + prop, function() {
-          return layerB[prop] = layerA[prop];
-        });
-      })(prop));
-    }
-    return results;
-  };
-})(this);
-
-Utils.timer = Timer = (function() {
-  function Timer(time, f) {
-    this.restart = bind(this.restart, this);
-    this.reset = bind(this.reset, this);
-    this.resume = bind(this.resume, this);
-    this.pause = bind(this.pause, this);
-    this.start = bind(this.start, this);
-    this.paused = false;
-    this.saveTime = null;
-    this.saveFunction = null;
-    if ((time != null) && (f != null)) {
-      this.start(time, f);
-    }
-  }
-
-  Timer.prototype.start = function(time, f) {
-    var proxy, timer;
-    this.saveTime = time;
-    this.saveFunction = f;
-    f();
-    proxy = (function(_this) {
-      return function() {
-        if (!_this.paused) {
-          return f();
-        }
-      };
-    })(this);
-    if (!this.paused) {
-      return this._id = timer = Utils.interval(time, proxy);
-    } else {
-
-    }
-  };
-
-  Timer.prototype.pause = function() {
-    return this.paused = true;
-  };
-
-  Timer.prototype.resume = function() {
-    return this.paused = false;
-  };
-
-  Timer.prototype.reset = function() {
-    return clearInterval(this._id);
-  };
-
-  Timer.prototype.restart = function() {
-    clearInterval(this._id);
-    return Utils.delay(0, (function(_this) {
-      return function() {
-        return _this.start(_this.saveTime, _this.saveFunction);
-      };
-    })(this));
-  };
-
-  return Timer;
-
-})();
+Utils.linkProperties = function() {
+  var layerA, layerB, props;
+  layerA = arguments[0], layerB = arguments[1], props = 3 <= arguments.length ? slice.call(arguments, 2) : [];
+  return props.forEach(function(prop) {
+    var update;
+    update = function() {
+      return layerB[prop] = layerA[prop];
+    };
+    layerA.on("change:" + prop, update);
+    return update();
+  });
+};
 
 Utils.copyTextToClipboard = function(text) {
   var copyElement, ctx;
@@ -1099,6 +1196,9 @@ Utils.randomText = function(words, sentences, paragraphs) {
   if (!sentences) {
     return text.join(' ');
   }
+  if (words <= 3) {
+    return _.capitalize(_.sampleSize(text, 3).join(' ')) + '.';
+  }
   sentences = [];
   while (text.length > 0) {
     if (text.length <= 3) {
@@ -1112,6 +1212,9 @@ Utils.randomText = function(words, sentences, paragraphs) {
       return results;
     }).apply(this)));
   }
+  if (sentences.length < 3) {
+    paragraphs = false;
+  }
   if (!paragraphs) {
     return sentences.map(function(a) {
       return _.capitalize(a.join(' ')) + '.';
@@ -1119,7 +1222,7 @@ Utils.randomText = function(words, sentences, paragraphs) {
   }
   paragraphs = [];
   while (sentences.length > 0) {
-    if (sentences.length <= 3) {
+    if (sentences.length <= 3 && paragraphs.length > 0) {
       _.sample(paragraphs).push(sentences.pop());
       continue;
     }
@@ -1137,7 +1240,7 @@ Utils.randomText = function(words, sentences, paragraphs) {
       return string += _.capitalize(sentence.join(' ')) + '. ';
     }, '').trim() + '\n\n';
   }
-  return text;
+  return text.trim();
 };
 
 Utils.isEmail = function(string) {
@@ -1146,5 +1249,15 @@ Utils.isEmail = function(string) {
 
 loremSource = ["alias", "consequatur", "aut", "perferendis", "sit", "voluptatem", "accusantium", "doloremque", "aperiam", "eaque", "ipsa", "quae", "ab", "illo", "inventore", "veritatis", "et", "quasi", "architecto", "beatae", "vitae", "dicta", "sunt", "explicabo", "aspernatur", "aut", "odit", "aut", "fugit", "sed", "quia", "consequuntur", "magni", "dolores", "eos", "qui", "ratione", "voluptatem", "sequi", "nesciunt", "neque", "dolorem", "ipsum", "quia", "dolor", "sit", "amet", "consectetur", "adipisci", "velit", "sed", "quia", "non", "numquam", "eius", "modi", "tempora", "incidunt", "ut", "labore", "et", "dolore", "magnam", "aliquam", "quaerat", "voluptatem", "ut", "enim", "ad", "minima", "veniam", "quis", "nostrum", "exercitationem", "ullam", "corporis", "nemo", "enim", "ipsam", "voluptatem", "quia", "voluptas", "sit", "suscipit", "laboriosam", "nisi", "ut", "aliquid", "ex", "ea", "commodi", "consequatur", "quis", "autem", "vel", "eum", "iure", "reprehenderit", "qui", "in", "ea", "voluptate", "velit", "esse", "quam", "nihil", "molestiae", "et", "iusto", "odio", "dignissimos", "ducimus", "qui", "blanditiis", "praesentium", "laudantium", "totam", "rem", "voluptatum", "deleniti", "atque", "corrupti", "quos", "dolores", "et", "quas", "molestias", "excepturi", "sint", "occaecati", "cupiditate", "non", "provident", "sed", "ut", "perspiciatis", "unde", "omnis", "iste", "natus", "error", "similique", "sunt", "in", "culpa", "qui", "officia", "deserunt", "mollitia", "animi", "id", "est", "laborum", "et", "dolorum", "fuga", "et", "harum", "quidem", "rerum", "facilis", "est", "et", "expedita", "distinctio", "nam", "libero", "tempore", "cum", "soluta", "nobis", "est", "eligendi", "optio", "cumque", "nihil", "impedit", "quo", "porro", "quisquam", "est", "qui", "minus", "id", "quod", "maxime", "placeat", "facere", "possimus", "omnis", "voluptas", "assumenda", "est", "omnis", "dolor", "repellendus", "temporibus", "autem", "quibusdam", "et", "aut", "consequatur", "vel", "illum", "qui", "dolorem", "eum", "fugiat", "quo", "voluptas", "nulla", "pariatur", "at", "vero", "eos", "et", "accusamus", "officiis", "debitis", "aut", "rerum", "necessitatibus", "saepe", "eveniet", "ut", "et", "voluptates", "repudiandae", "sint", "et", "molestiae", "non", "recusandae", "itaque", "earum", "rerum", "hic", "tenetur", "a", "sapiente", "delectus", "ut", "aut", "reiciendis", "voluptatibus", "maiores", "doloribus", "asperiores", "repellat"];
 
-// ---
-// generated by coffee-script 1.9.2
+
+},{}],"myModule":[function(require,module,exports){
+exports.myVar = "myVariable";
+
+exports.myFunction = function() {
+  return print("myFunction is running");
+};
+
+exports.myArray = [1, 2, 3];
+
+
+},{}]},{},[])
