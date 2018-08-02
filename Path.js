@@ -368,14 +368,4 @@ exports.Path = (function(superClass) {
 })(Layer);
 
 
-},{}],"myModule":[function(require,module,exports){
-exports.myVar = "myVariable";
-
-exports.myFunction = function() {
-  return print("myFunction is running");
-};
-
-exports.myArray = [1, 2, 3];
-
-
 },{}]},{},[])
